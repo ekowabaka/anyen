@@ -2,6 +2,7 @@
 require_once "Widget.php";
 require_once "widgets/cli/CliTextInputWidget.php";
 require_once "widgets/cli/CliTextWidget.php";
+require_once "widgets/cli/CliFunctionWidget.php";
 
 class AnyenCli extends Anyen
 {
@@ -35,6 +36,7 @@ class AnyenCli extends Anyen
     {
         $widgetClass = self::getClassName("cli_{$widget['type']}_widget");
         $widgetObject = new $widgetClass($widget);
+        $widgetObject->setWizard($this);
         $response = $widgetObject->run();
         if(is_array($response))
         {
@@ -44,6 +46,4 @@ class AnyenCli extends Anyen
             }
         }
     }
-    
-    
 }

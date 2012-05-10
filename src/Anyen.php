@@ -13,8 +13,8 @@ abstract class Anyen
     const STATUS_TERMINATE = 'end';
     
     protected $data;
-    
     protected $status;
+    protected $callbackObject;
     
     public static function run($wizardScript, $params = array())
     {
@@ -47,6 +47,7 @@ abstract class Anyen
         {
             $page = $wizard[$i];
             
+            $runner->setCallbackObject($params['callback_object']);
             $runner->executeCallback("{$page['page']}_render_callback");
             $runner->runPage($page);
             $runner->executeCallback("{$page['page']}_route_callback");
@@ -99,6 +100,16 @@ abstract class Anyen
     public function getData()
     {
         return $this->data;
+    }
+    
+    public function setCallbackObject($object)
+    {
+        $this->callbackObject = $object;
+    }
+    
+    public function getCallbackObject()
+    {
+        return $this->callbackObject;
     }
     
     public function runPage($wizard)
