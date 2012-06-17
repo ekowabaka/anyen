@@ -3,8 +3,7 @@ class CliFunctionWidget extends Widget
 {
     public function run()
     {
-        $function = $this->properties['function_name'];
-        $function($this);
+        $this->wizard->executeCallback($this->properties['function_name'], array());
     }
     
     public function getCallbackObject()
@@ -15,11 +14,6 @@ class CliFunctionWidget extends Widget
     public function getData()
     {
         return $this->wizard->getData();
-    }
-    
-    public function out($message, $progress = false)
-    {
-        echo "$message\n";
     }
     
     public function error($message)

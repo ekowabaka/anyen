@@ -29,7 +29,7 @@ require_once "widgets/cli/CliTextWidget.php";
 require_once "widgets/cli/CliFunctionWidget.php";
 
 /**
- * A runner for running wizards on the CLI.
+ * A runner for running wizards on the command line.
  */
 class AnyenCli extends Anyen
 {
@@ -42,7 +42,7 @@ class AnyenCli extends Anyen
     
     protected function renderPage($page) 
     {
-        // Prevent the annoying repeated rendering of the title
+        // Prevent the annoying repeated rendering of the title makes console clumsy
         if($page['page'] != $this->lastPage)
         {
             echo "\n{$page['title']}\n";
@@ -62,6 +62,11 @@ class AnyenCli extends Anyen
     public function showMessage($message)
     {
         echo "$message\n";
+    }
+    
+    public function out($string)
+    {
+        echo "$string\n";
     }
     
     /**

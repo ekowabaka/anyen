@@ -45,5 +45,5 @@ class CliTextInputWidget extends Widget
             echo "Please provide a valid answer.\n";
             return $this->getUserResponse($question, $answers, $default, $required);
         }
-    }    
+    }  
 }

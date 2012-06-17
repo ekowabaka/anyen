@@ -25,6 +25,7 @@
 
 require_once "AnyenCli.php";
 require_once "vendor/spyc/spyc.php";
+require_once "wizard_logic.php";
 
 /**
  * Main class for the anyen wizard framework.
@@ -65,15 +66,46 @@ abstract class Anyen
     protected $status;
     
     /**
-     * A user supplied object which is passed around. It is intended to be used
-     * by the user's scripts for their operations.
+     * A user supplied object which is passed around the wizard. It is intended 
+     * to be used by the wizards scripts for their operations.
      * @var mixed
      */
     protected $callbackObject;
     
     /**
-     * The main entry point for the anyen framework. Users of the framework
-     * call this method to execute their wizards.
+     * Wizard's name. The name of a given wizard. Names are initially derived
+     * from the file name of the wizard script. The wizard script can also
+     * explicitly specify a name to be used other than the original filename.
+     * @var string 
+     */
+    protected $name;
+    
+    /**
+     * An instance of the object responsible for providing the 3rd party logic
+     * of the wizard
+     * @param type $name 
+     */
+    protected $wizardLogicObject;
+    
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function setLogicObject($logicObject)
+    {
+        $logicObject->setWizard($this);
+        $this->wizardLogicObject = $logicObject;
+    }
+    
+    /**
+     * The main entry point for the anyen framework's wizards. Users of the 
+     * framework call this method to execute their wizards.
      * 
      * @param string $wizardScript A path to the wizard script
      * @param array $params An array of parameters
@@ -99,28 +131,48 @@ abstract class Anyen
             throw new Exception("$wizardScript not found!");
         }
         
-        $wizardFunctionsScript = preg_replace("/(\.yml|\.yaml)$/", ".php", $wizardScript);
+        preg_match("/(?<wizard_script>.*)(?<extension>\.yml|\.yaml)/i", $wizardScript, $matches);
         
-        if(file_exists($wizardFunctionsScript))
+        $wizardName = basename($matches['wizard_script']);
+        $runner->setName($wizardName);
+        
+        $wizardClassFile = "{$matches['wizard_script']}.php";
+        
+        if(file_exists($wizardClassFile))
         {
-            require $wizardFunctionsScript;
+            require $wizardClassFile;
+            $runner->setLogicObject(new $wizardName());
         }
         
         for($i = 0; $i < count($wizard); $i++)
         {
             $page = $wizard[$i];
             
+            $runner->resetStatus();
             $runner->setCallbackObject($params['callback_object']);
             $runner->executeCallback("{$page['page']}_render_callback");
+            
+            switch($runner->getStatus())
+            {
+                case Anyen::STATUS_REPEAT:
+                    $i--;
+                    continue;
+                    
+                case Anyen::STATUS_TERMINATE:
+                    $i == count($wizard);
+                    continue;
+            }
+            
             $runner->runPage($page);
+            
             $runner->executeCallback("{$page['page']}_route_callback");
             
             switch($runner->getStatus())
             {
-
                 case Anyen::STATUS_REPEAT:
                     $i--;
                     break;
+                
                 case Anyen::STATUS_TERMINATE:
                     $i == count($wizard);
                     break;
@@ -134,14 +186,14 @@ abstract class Anyen
      * @param string $callback
      * @return boolean 
      */
-    protected function executeCallback($callback)
+    public function executeCallback($callback, $arguments = array())
     {
-        if(function_exists($callback))
+        if(method_exists($this->wizardLogicObject, $callback))
         {
-            $function = new ReflectionFunction($callback);
-            return $function->invoke($this);
+            $method = new ReflectionMethod($this->getName(), $callback);
+            $method->invokeArgs($this->wizardLogicObject, $arguments);
         }
-        return true;
+        return false;
     }
     
     /**
@@ -169,6 +221,15 @@ abstract class Anyen
     public function repeatPage()
     {
         $this->status = Anyen::STATUS_REPEAT;
+    }
+    
+    /**
+     * Called by the user's wizard functions to set the status of the wizard
+     * so the entire wizard is terminated. 
+     */
+    public function terminate()
+    {
+        $this->status = Anyen::STATUS_TERMINATE;
     }
     
     /**
@@ -203,6 +264,11 @@ abstract class Anyen
     {
         $this->status = Anyen::STATUS_CONTINUE;
         $this->renderPage($wizard);
+    }
+    
+    public function resetStatus()
+    {
+        $this->status = Anyen::STATUS_CONTINUE;
     }
     
     abstract public function showMessage($message);
