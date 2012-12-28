@@ -24,12 +24,12 @@
  */
 
 /**
- * An abstract widget class. Widgets are used by the various runners to provide
+ * An abstract cli widget class. Widgets are used by the various runners to provide
  * interface elements for user interaction.
  * 
  * @author James Ainooson <jainooson@gmail.com> 
  */
-abstract class Widget
+abstract class CliWidget
 {
     /**
      * The properties which were passed to the widget by the runner. Properties

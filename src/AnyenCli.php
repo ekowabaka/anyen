@@ -23,13 +23,13 @@
  * 
  */
 
-require_once "Widget.php";
+require_once "widgets/CliWidget.php";
 require_once "widgets/cli/CliTextInputWidget.php";
 require_once "widgets/cli/CliTextWidget.php";
 require_once "widgets/cli/CliFunctionWidget.php";
 
 /**
- * A runner for running wizards on the command line.
+ * A this for running wizards on the command line.
  */
 class AnyenCli extends Anyen
 {
@@ -88,4 +88,45 @@ class AnyenCli extends Anyen
             }
         }
     }
+    
+    protected function go($params)
+    {
+        $wizard = $this->wizardDescription;
+        $this->setCallbackObject($params['callback_object']);
+        
+        for($i = 0; $i < count($wizard); $i++)
+        {
+            $page = $wizard[$i];
+            
+            $this->resetStatus();
+            $this->executeCallback("{$page['page']}_render_callback");
+            
+            switch($this->getStatus())
+            {
+                case Anyen::STATUS_REPEAT:
+                    $i--;
+                    continue;
+                    
+                case Anyen::STATUS_TERMINATE:
+                    $i == count($wizard);
+                    continue;
+            }
+            
+            $this->runPage($page);
+            
+            $this->executeCallback("{$page['page']}_route_callback");
+            
+            switch($this->getStatus())
+            {
+                case Anyen::STATUS_REPEAT:
+                    $i--;
+                    break;
+                
+                case Anyen::STATUS_TERMINATE:
+                    $i == count($wizard);
+                    break;
+            }
+        }        
+    }
 }
+

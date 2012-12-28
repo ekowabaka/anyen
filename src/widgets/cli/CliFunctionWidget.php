@@ -1,5 +1,5 @@
 <?php
-class CliFunctionWidget extends Widget
+class CliFunctionWidget extends CliWidget
 {
     public function run()
     {

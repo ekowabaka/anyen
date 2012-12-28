@@ -24,11 +24,12 @@
  */
 
 require_once "AnyenCli.php";
-require_once "vendor/spyc/spyc.php";
+require_once __DIR__ . "../../vendor/spyc/spyc.php";
 require_once "wizard_logic.php";
 
 /**
  * Main class for the anyen wizard framework.
+ * 
  * @author James Ainooson 
  */
 abstract class Anyen
@@ -80,6 +81,10 @@ abstract class Anyen
      */
     protected $name;
     
+    protected $wizardDescription;
+    
+    protected $title;
+    
     /**
      * An instance of the object responsible for providing the 3rd party logic
      * of the wizard
@@ -103,6 +108,11 @@ abstract class Anyen
         $this->wizardLogicObject = $logicObject;
     }
     
+    public function setWizardDescription($wizard)
+    {
+        $this->wizardDescription = $wizard;
+    }
+    
     /**
      * The main entry point for the anyen framework's wizards. Users of the 
      * framework call this method to execute their wizards.
@@ -112,7 +122,7 @@ abstract class Anyen
      * @throws Exception 
      */
     public static function run($wizardScript, $params = array())
-    {
+    {   
         if(defined('STDOUT'))
         {
             $runner = new AnyenCli();
@@ -125,6 +135,7 @@ abstract class Anyen
         if(file_exists($wizardScript))
         {
             $wizard = Spyc::YAMLLoad(file_get_contents($wizardScript));
+            $runner->setWizardDescription($wizard);
         }
         else
         {
@@ -144,40 +155,7 @@ abstract class Anyen
             $runner->setLogicObject(new $wizardName());
         }
         
-        for($i = 0; $i < count($wizard); $i++)
-        {
-            $page = $wizard[$i];
-            
-            $runner->resetStatus();
-            $runner->setCallbackObject($params['callback_object']);
-            $runner->executeCallback("{$page['page']}_render_callback");
-            
-            switch($runner->getStatus())
-            {
-                case Anyen::STATUS_REPEAT:
-                    $i--;
-                    continue;
-                    
-                case Anyen::STATUS_TERMINATE:
-                    $i == count($wizard);
-                    continue;
-            }
-            
-            $runner->runPage($page);
-            
-            $runner->executeCallback("{$page['page']}_route_callback");
-            
-            switch($runner->getStatus())
-            {
-                case Anyen::STATUS_REPEAT:
-                    $i--;
-                    break;
-                
-                case Anyen::STATUS_TERMINATE:
-                    $i == count($wizard);
-                    break;
-            }
-        }
+        $runner->go($params);   
     }
     
     /**
@@ -273,5 +251,5 @@ abstract class Anyen
     
     abstract public function showMessage($message);
     abstract protected function renderPage($wizard);
+    abstract protected function go($params);
 }
-

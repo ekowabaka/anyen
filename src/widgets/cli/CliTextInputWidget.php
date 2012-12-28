@@ -1,6 +1,6 @@
 <?php
 
-class CliTextInputWidget extends Widget
+class CliTextInputWidget extends CliWidget
 {
     public function run()
     {
