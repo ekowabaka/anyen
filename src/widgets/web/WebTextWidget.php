@@ -1,7 +1,9 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-?>
+class WebTextWidget extends WebWidget
+{    
+    public function render() 
+    {
+        return "<p>{$this->properties['text']}</p>";
+    }
+}

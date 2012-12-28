@@ -1,33 +1,43 @@
 <?php
 
+require_once "widgets/WebWidget.php";
+require_once "widgets/web/WebTextInputWidget.php";
+require_once "widgets/web/WebTextWidget.php";
+require_once "widgets/web/WebFunctionWidget.php";
+
 class AnyenWeb extends Anyen
 {
+    private $banner;
+    
     public function showMessage($message)
     {
         
     }
     
-    protected function renderPage($wizard)
+    protected function renderPage($page)
     {
+        $widgets = array();
         if(is_array($page['widgets']))
         {
             foreach($page['widgets'] as $widget)
             {
-                $this->renderWidget($widget);
+                $widgetClass = self::getClassName("web_{$widget['type']}_widget");
+                $widgetObject = new $widgetClass($widget);
+                $widgets[] = $widgetObject->render();
             }
         }        
-        require __DIR__ . "/templates/web/main.tpl.php";
-    }
-    
-    private function renderWidget($widget)
-    {
         
+        $title = $page['title'];
+        $banner = $this->banner;
+        
+        require __DIR__ . "/templates/web/main.tpl.php";
     }
     
     protected function go($params)
     {
         $wizard = $this->wizardDescription;
         $this->setCallbackObject($params['callback_object']);  
+        $this->banner = $params['banner'];
         
         if(isset($_GET['p']))
         {
