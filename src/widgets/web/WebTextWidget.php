@@ -4,6 +4,8 @@ class WebTextWidget extends WebWidget
 {    
     public function render() 
     {
-        return "<p>{$this->properties['text']}</p>";
+        return array(
+            'html' => "<p>{$this->properties['text']}</p>"
+        );
     }
 }
