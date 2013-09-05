@@ -110,7 +110,7 @@ class AnyenCli extends Anyen
                     continue;
                     
                 case Anyen::STATUS_TERMINATE:
-                    $i == count($wizard);
+                    $i = count($wizard);
                     continue;
             }
             
@@ -124,9 +124,13 @@ class AnyenCli extends Anyen
                     break;
                 
                 case Anyen::STATUS_TERMINATE:
-                    $i == count($wizard);
+                    $i = count($wizard);
                     break;
             }
+            
+            echo "\nPress ENTER to continue ...";
+            fgets(STDIN);
+            echo "\n";
         }        
     }
 }

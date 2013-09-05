@@ -108,6 +108,11 @@ abstract class Anyen
         $this->wizardLogicObject = $logicObject;
     }
     
+    public function getLogicObject($logicObject)
+    {
+        return $this->logicObject;
+    }
+    
     public function setWizardDescription($wizard)
     {
         $this->wizardDescription = $wizard;
@@ -228,9 +233,16 @@ abstract class Anyen
      * Returs the data collected so far during the execution of the wizard
      * @return array
      */
-    public function getData()
+    public function getData($key = false)
     {
-        return $this->data;
+        if($key === false)
+        {
+            return $this->data;
+        }
+        else
+        {
+            return $this->data[$key];
+        }
     }
     
     public function setCallbackObject($object)

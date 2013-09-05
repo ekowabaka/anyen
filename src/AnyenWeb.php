@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once "widgets/WebWidget.php";
 require_once "widgets/web/WebTextInputWidget.php";
 require_once "widgets/web/WebTextWidget.php";
@@ -18,6 +20,15 @@ class AnyenWeb extends Anyen
         $this->message = $message;
     }
     
+    /**
+     * Generates a unique hash for the page. This is used in ensuring that
+     * the user hasn't jumped any steps in the progress of the wizard by
+     * altering the ?p attribute in the URL query.
+     * 
+     * @todo this method should use a stronger hash with some randomized values
+     * @param string $pageNumber
+     * @return string
+     */
     private function getHash($pageNumber)
     {
         $hash = '';
@@ -28,6 +39,10 @@ class AnyenWeb extends Anyen
         return md5($hash);
     }
     
+    /**
+     * Renders the page 
+     * @param string $page
+     */
     protected function renderPage($page)
     {
         $widgets = array();
@@ -69,6 +84,10 @@ class AnyenWeb extends Anyen
         $this->hash = $this->getHash($this->pageNumber);        
         $page = $wizard[$this->pageNumber];
         
+        /* $_GET['h'] represents the hash 
+         * $_GET['p'] represents the page number
+         * $_GET['a'] is a constant used to prevent a redirect loop
+         */
         if($this->hash == $_GET['h'] && $this->pageNumber == $_GET['p'] && $_GET['a'] == 'n')
         {
             foreach(explode('&', $_GET['d']) as $attrBlock)
@@ -76,7 +95,8 @@ class AnyenWeb extends Anyen
                 $attr = explode('=', $attrBlock);
                 $_SESSION['anyen_data'][$attr[0]] = $attr[1];
             }
-            
+
+            $this->data = unserialize($_SESSION['logic_object_data']);
             $this->executeCallback("{$page['page']}_route_callback");
             
             switch($this->getStatus())
@@ -86,8 +106,9 @@ class AnyenWeb extends Anyen
                     break;
 
                 case Anyen::STATUS_TERMINATE:
-                    $this->pageNumber == count($wizard);
+                    $this->pageNumber = count($wizard);
                     break;
+                
                 default:
                     $this->pageNumber++;
             }
@@ -105,11 +126,11 @@ class AnyenWeb extends Anyen
                 continue;
 
             case Anyen::STATUS_TERMINATE:
-                $this->pageNumber == count($wizard);
+                $this->pageNumber = count($wizard);
                 continue;
         }
 
         $this->runPage($page);
-        
+        $_SESSION['logic_object_data'] = serialize($this->data);        
     }
 }
