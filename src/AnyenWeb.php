@@ -4,6 +4,7 @@ require_once "widgets/WebWidget.php";
 require_once "widgets/web/WebTextInputWidget.php";
 require_once "widgets/web/WebTextWidget.php";
 require_once "widgets/web/WebFunctionWidget.php";
+require_once "widgets/web/WebChecklistWidget.php";
 
 class AnyenWeb extends Anyen
 {
@@ -34,9 +35,7 @@ class AnyenWeb extends Anyen
         {
             foreach($page['widgets'] as $widget)
             {
-                $widgetClass = self::getClassName("web_{$widget['type']}_widget");
-                $widgetObject = new $widgetClass($widget);
-                $widgets[] = $widgetObject->render();
+                $widgets[] = $this->loadWidget($widget, 'web')->render();
             }
         }        
         
@@ -45,10 +44,10 @@ class AnyenWeb extends Anyen
         $page_number = $this->pageNumber;
         $hash = $this->hash;
         $show_next = true;
+        //if($page_number > 1) $show_back = true;
         $message = $_GET['m'];
         
         require __DIR__ . "/templates/web/main.tpl.php";
-        die();
     }
     
     protected function go($params)
@@ -77,7 +76,7 @@ class AnyenWeb extends Anyen
                 $attr = explode('=', $attrBlock);
                 $_SESSION['anyen_data'][$attr[0]] = $attr[1];
             }
-            $this->data = $_SESSION['anyen_data'];
+            
             $this->executeCallback("{$page['page']}_route_callback");
             
             switch($this->getStatus())

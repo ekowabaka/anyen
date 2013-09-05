@@ -169,7 +169,7 @@ abstract class Anyen
         if(method_exists($this->wizardLogicObject, $callback))
         {
             $method = new ReflectionMethod($this->getName(), $callback);
-            $method->invokeArgs($this->wizardLogicObject, $arguments);
+            return $method->invokeArgs($this->wizardLogicObject, $arguments);
         }
         return false;
     }
@@ -219,6 +219,11 @@ abstract class Anyen
         return $this->status;
     }
     
+    public function setData($key, $value)
+    {
+        $this->data[$key] = $value;
+    }
+    
     /**
      * Returs the data collected so far during the execution of the wizard
      * @return array
@@ -247,6 +252,14 @@ abstract class Anyen
     public function resetStatus()
     {
         $this->status = Anyen::STATUS_CONTINUE;
+    }
+    
+    public function loadWidget($widget, $scope)
+    {
+        $widgetClass = self::getClassName("{$scope}_{$widget['type']}_widget");
+        $widgetObject = new $widgetClass($widget);
+        $widgetObject->setWizard($this);
+        return $widgetObject;
     }
     
     abstract public function showMessage($message);

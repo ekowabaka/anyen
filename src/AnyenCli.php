@@ -27,6 +27,7 @@ require_once "widgets/CliWidget.php";
 require_once "widgets/cli/CliTextInputWidget.php";
 require_once "widgets/cli/CliTextWidget.php";
 require_once "widgets/cli/CliFunctionWidget.php";
+require_once "widgets/cli/CliChecklistWidget.php";
 
 /**
  * A this for running wizards on the command line.
@@ -76,10 +77,11 @@ class AnyenCli extends Anyen
      */
     private function renderWidget($widget)
     {
-        $widgetClass = self::getClassName("cli_{$widget['type']}_widget");
+        /*$widgetClass = self::getClassName("cli_{$widget['type']}_widget");
         $widgetObject = new $widgetClass($widget);
-        $widgetObject->setWizard($this);
-        $response = $widgetObject->run();
+        $widgetObject->setWizard($this);*/
+        
+        $response = $this->loadWidget($widget, 'cli')->run();
         if(is_array($response))
         {
             foreach($response as $key => $value)
@@ -113,7 +115,6 @@ class AnyenCli extends Anyen
             }
             
             $this->runPage($page);
-            
             $this->executeCallback("{$page['page']}_route_callback");
             
             switch($this->getStatus())
