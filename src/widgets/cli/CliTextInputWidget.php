@@ -20,7 +20,7 @@ class CliTextInputWidget extends CliWidget
         echo " [$default]: ";
         $response = str_replace(array("\n", "\r"),array("",""),fgets(STDIN));
 
-        if($response == "" && $required === true)
+        if($response == "" && $required === true && $default == '')
         {
             echo "A value is required.\n";
             return $this->getUserResponse($question, $answers, $default, $required);

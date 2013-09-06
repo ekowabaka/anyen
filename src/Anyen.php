@@ -57,7 +57,7 @@ abstract class Anyen
      * 
      * @var array
      */
-    protected $data;
+    protected $data = array();
     
     /**
      * The status which was set by the last page which was executed.

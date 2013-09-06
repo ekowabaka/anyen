@@ -6,7 +6,7 @@ class WebChecklistWidget extends WebWidget
         $html = "<ul class='checklist'>";
         foreach($response as $check => $value)
         {
-            $params = $value ? "class='checked'" : "class='unchecked'";
+            $params = $value ? "class='success_icon'" : "class='error_icon'";
             $html .= "<li $params>$check</li>";
         }
         $html .= "</ul>";

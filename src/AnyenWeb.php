@@ -13,11 +13,11 @@ class AnyenWeb extends Anyen
     private $banner;
     private $pageNumber;
     private $hash;
-    private $message;
     
-    public function showMessage($message)
+    public function showMessage($message, $type = 'info')
     {
-        $this->message = $message;
+        $_SESSION['message'] = $message;
+        $_SESSION['message_type'] = $type;
     }
     
     /**
@@ -60,7 +60,9 @@ class AnyenWeb extends Anyen
         $hash = $this->hash;
         $show_next = true;
         //if($page_number > 1) $show_back = true;
-        $message = $_GET['m'];
+        $message = $_SESSION['message'];
+        $message_type = $_SESSION['message_type'];
+        unset($_SESSION['message']);
         
         require __DIR__ . "/templates/web/main.tpl.php";
     }
@@ -95,14 +97,15 @@ class AnyenWeb extends Anyen
                 $attr = explode('=', $attrBlock);
                 $_SESSION['anyen_data'][$attr[0]] = $attr[1];
             }
-
-            $this->data = unserialize($_SESSION['logic_object_data']);
+            
+            parse_str($_GET['d'], $this->data);
+            $this->data = array_merge($this->data, unserialize($_SESSION['logic_object_data']));
+            
             $this->executeCallback("{$page['page']}_route_callback");
             
             switch($this->getStatus())
             {
                 case Anyen::STATUS_REPEAT:
-                    $extraQuery = "&m=" . urlencode($this->message) . '&' . $_GET['d'] ;
                     break;
 
                 case Anyen::STATUS_TERMINATE:
@@ -114,6 +117,7 @@ class AnyenWeb extends Anyen
             }
             $newHash = $this->getHash($this->pageNumber);
             header("Location: ?p={$this->pageNumber}&h={$newHash}" . $extraQuery);
+            return;
         }        
 
         $this->resetStatus();
