@@ -69,6 +69,7 @@
                 padding-left: 36px;
                 margin-bottom: 25px;
                 font-size: small;
+                font-weight: bold;
                 box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
                 background-repeat: no-repeat;
                 background-position: 10px 50%;
@@ -94,7 +95,7 @@
             }
             
             .info{background-color:#fff98f}
-            .error{background-color:#fedee4; color:#ff6464}
+            .error{background-color:#fedee4; color:brown}
             .success{background-color:#99ea57}
             
             .success_icon{background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH3QkFERU3yla9TgAAAWdJREFUOMut00+LjlEYx/HPcxeyk6ZnyinNQglNWUzTvZDNKH9SkjfAOzhLC6UmkrI4K4Zk7RUofxajlFNjS3YP5SzMQkgaimzOo7t77pjktzrnOud7dV3n/K6RAYXU7sIJhBp6h4cl5o/9u6MeOItlnMf23t3vuIfLJeb1TQlCag/hAfb6s97iVIn51e8EIbUzWMOcv+tnTbJQYv7Q1OC1LcL3MY+duAqj+mDvB3ru6xHOlJg3Qmov4BbGDZa2AD/F2Qofxg3swFLTK/01Nnrwc5wuMX8NqZ3HY+yuZ3NN5yfWcQxH67/DC5wsMX8JqT2IJ5jp2qDBpG5WSsylxLyGBdzF8RLzp5Da/RUe96qbdB9xG67jUon5R8cf+7DaceVU3zBuqj1v11YuYjWkdk+FD+DZAAw3S8yfpz5Yxpu6PoIcUnuuOnN2AJ7gyn+x8rQCJeaXWMSdOjgGhmkFi1N40zT+yzj/AuSjeLbqW7Y6AAAAAElFTkSuQmCC)}
