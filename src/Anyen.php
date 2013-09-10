@@ -163,6 +163,12 @@ abstract class Anyen
         $runner->go($params);   
     }
     
+    protected function getNumberOfPages()
+    {
+        return count($this->wizardDescription);
+    }
+
+
     /**
      * Utility method for executing callbacks.
      * 

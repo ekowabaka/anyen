@@ -58,8 +58,8 @@ class AnyenWeb extends Anyen
         $banner = $this->banner;
         $page_number = $this->pageNumber;
         $hash = $this->hash;
-        $show_next = true;
-        //if($page_number > 1) $show_back = true;
+        if($page_number > 0) $show_back = true;
+        if($page_number < $this->getNumberOfPages() - 1) $show_next = true;
         $message = $_SESSION['message'];
         $message_type = $_SESSION['message_type'];
         unset($_SESSION['message']);
@@ -72,15 +72,15 @@ class AnyenWeb extends Anyen
         $wizard = $this->wizardDescription;
         $this->setCallbackObject($params['callback_object']);  
         $this->banner = $params['banner'];
+        $this->data = isset($_SESSION['anyen_data']) ? unserialize($_SESSION['anyen_data']) : array();
                 
-        if(isset($_GET['p']))
+        if($_GET['p'] != '')
         {
             $this->pageNumber = $_GET['p'];
         }
         else
         {
             $this->pageNumber = 0;
-            $_SESSION['anyen_data'] = array();
         }
         
         $this->hash = $this->getHash($this->pageNumber);        
@@ -91,15 +91,9 @@ class AnyenWeb extends Anyen
          * $_GET['a'] is a constant used to prevent a redirect loop
          */
         if($this->hash == $_GET['h'] && $this->pageNumber == $_GET['p'] && $_GET['a'] == 'n')
-        {
-            foreach(explode('&', $_GET['d']) as $attrBlock)
-            {
-                $attr = explode('=', $attrBlock);
-                $_SESSION['anyen_data'][$attr[0]] = $attr[1];
-            }
-            
+        {            
             parse_str($_GET['d'], $this->data);
-            $this->data = array_merge($this->data, unserialize($_SESSION['logic_object_data']));
+            $this->data = array_merge(unserialize($_SESSION['anyen_data']), $this->data);
             
             $this->executeCallback("{$page['page']}_route_callback");
             
@@ -116,6 +110,7 @@ class AnyenWeb extends Anyen
                     $this->pageNumber++;
             }
             $newHash = $this->getHash($this->pageNumber);
+            $_SESSION['anyen_data'] = serialize($this->data);                    
             header("Location: ?p={$this->pageNumber}&h={$newHash}" . $extraQuery);
             return;
         }        
@@ -135,6 +130,6 @@ class AnyenWeb extends Anyen
         }
 
         $this->runPage($page);
-        $_SESSION['logic_object_data'] = serialize($this->data);        
+        $_SESSION['anyen_data'] = serialize($this->data);        
     }
 }

@@ -18,7 +18,8 @@ class WebTextInputWidget extends WebWidget
         }
         
         $getData = "data += '{$this->properties['name']}=' + escape(document.getElementById('{$this->properties['name']}').value) + '&';";
-        $value = $this->properties['default'];
+        $dataValue = $this->wizard->getData($this->properties['name']);
+        $value = $dataValue == '' ? $this->properties['default'] : $dataValue;
         return array(
             'html' => "<label>{$this->properties['label']}</label>
                 <span class='error-message' id='{$this->properties['name']}_message'></span>
