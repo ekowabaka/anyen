@@ -175,13 +175,15 @@ abstract class Anyen
      * @param string $callback
      * @return boolean 
      */
-    public function executeCallback($callback, $arguments = array())
+    public function executeCallback($callback, $arguments = array(), $throwException = false)
     {
         if(method_exists($this->wizardLogicObject, $callback))
         {
             $method = new ReflectionMethod($this->getName(), $callback);
             return $method->invokeArgs($this->wizardLogicObject, $arguments);
         }
+        
+        if($throwException) throw new Exception ("Method not found $callback");
         return false;
     }
     

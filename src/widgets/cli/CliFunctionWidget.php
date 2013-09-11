@@ -3,7 +3,7 @@ class CliFunctionWidget extends CliWidget
 {
     public function run()
     {
-        $this->wizard->executeCallback($this->properties['function_name'], array());
+        $this->wizard->executeCallback($this->properties['function_name'], array(), true);
     }
     
     public function getCallbackObject()

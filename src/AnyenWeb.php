@@ -60,6 +60,7 @@ class AnyenWeb extends Anyen
         $hash = $this->hash;
         if($page_number > 0) $show_back = true;
         if($page_number < $this->getNumberOfPages() - 1) $show_next = true;
+        $prev_page_number = $page_number - 1;
         $message = $_SESSION['message'];
         $message_type = $_SESSION['message_type'];
         unset($_SESSION['message']);
