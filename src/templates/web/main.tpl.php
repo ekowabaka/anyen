@@ -47,7 +47,7 @@
                 font-weight:bold;
             }
             
-            input[type=text]{
+            input[type=text], input[type=password]{
                 width:100%;
                 padding:1%;
                 border:2px solid #f0f0f0;

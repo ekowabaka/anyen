@@ -4,7 +4,11 @@ class WebFunctionWidget extends WebWidget
 {
     public function render()
     {
+        ob_start();
         $this->wizard->executeCallback($this->properties['function_name'], array(), true);
+        return array(
+            'html' => ob_get_clean()
+        );
     }
     
     public function getCallbackObject()

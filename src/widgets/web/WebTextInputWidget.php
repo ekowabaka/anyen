@@ -20,10 +20,11 @@ class WebTextInputWidget extends WebWidget
         $getData = "data += '{$this->properties['name']}=' + escape(document.getElementById('{$this->properties['name']}').value) + '&';";
         $dataValue = $this->wizard->getData($this->properties['name']);
         $value = $dataValue == '' ? $this->properties['default'] : $dataValue;
+        $type = $this->properties['masked'] == 'true' ? 'password' : 'text';
         return array(
             'html' => "<label>{$this->properties['label']}</label>
                 <span class='error-message' id='{$this->properties['name']}_message'></span>
-                <input id='{$this->properties['name']}' type='text' value='$value'>",
+                <input id='{$this->properties['name']}' type='$type' value='$value'>",
             'validation' => $validation,
             'get_data' => $getData
         );
