@@ -10,6 +10,11 @@
             "name": "Ekow Abaka Ainooson",
             "email": "jainooson@gmail.com"
         }
-    ]
+    ],
+    "autoload" : {
+        "psr-4" : { 
+            "anyen\\" : "src/"
+        }
+    }    
 }
 
