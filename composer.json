@@ -1,0 +1,15 @@
+{
+    "name": "ekowabaka/anyen",
+    "description": "A simple wizard creation tool. Anyen helps you to create wizards that work both on the CLI and the web interface.",
+    "require": {
+        "mustangostang/spyc": "0.5.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ekow Abaka Ainooson",
+            "email": "jainooson@gmail.com"
+        }
+    ]
+}
+
