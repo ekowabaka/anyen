@@ -23,6 +23,8 @@
  * 
  */
 
+namespace anyen\widgets;
+
 /**
  * An abstract cli widget class. Widgets are used by the various runners to provide
  * interface elements for user interaction.

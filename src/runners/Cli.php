@@ -101,11 +101,11 @@ class Cli extends \anyen\Runner
             
             switch($this->getStatus())
             {
-                case Anyen::STATUS_REPEAT:
+                case self::STATUS_REPEAT:
                     $i--;
                     continue;
                     
-                case Anyen::STATUS_TERMINATE:
+                case self::STATUS_TERMINATE:
                     $i = count($wizard);
                     continue;
             }
@@ -115,11 +115,11 @@ class Cli extends \anyen\Runner
             
             switch($this->getStatus())
             {
-                case Anyen::STATUS_REPEAT:
+                case self::STATUS_REPEAT:
                     $i--;
                     break;
                 
-                case Anyen::STATUS_TERMINATE:
+                case self::STATUS_TERMINATE:
                     $i = count($wizard);
                     break;
             }

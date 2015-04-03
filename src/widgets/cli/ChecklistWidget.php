@@ -1,5 +1,8 @@
 <?php
-class CliChecklistWidget extends CliWidget
+namespace anyen\widgets\cli;
+use anyen\widgets\CliWidget;
+
+class ChecklistWidget extends CliWidget
 {
     public function run() {
         $response = $this->wizard->executeCallback($this->properties['function_name'], array());

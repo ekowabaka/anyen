@@ -1,5 +1,8 @@
 <?php
-class CliFunctionWidget extends CliWidget
+namespace anyen\widgets\cli;
+use anyen\widgets\CliWidget;
+
+class FunctionWidget extends CliWidget
 {
     public function run()
     {

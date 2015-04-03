@@ -1,6 +1,8 @@
 <?php
+namespace anyen\widgets\cli;
+use anyen\widgets\CliWidget;
 
-class CliTextInputWidget extends CliWidget
+class TextInputWidget extends CliWidget
 {
     public function run()
     {
