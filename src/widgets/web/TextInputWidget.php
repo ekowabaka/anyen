@@ -23,12 +23,33 @@ class TextInputWidget extends WebWidget
         $dataValue = $this->wizard->getData($this->properties['name']);
         $value = $dataValue == '' ? $this->properties['default'] : $dataValue;
         $type = $this->properties['masked'] == 'true' ? 'password' : 'text';
-        return array(
-            'html' => "<label>{$this->properties['label']}</label>
-                <span class='error-message' id='{$this->properties['name']}_message'></span>
-                <input id='{$this->properties['name']}' type='$type' value='$value'>",
-            'validation' => $validation,
-            'get_data' => $getData
-        );
+        
+        if(count($this->properties['options']) > 0)
+        {
+            $html = "<label>{$this->properties['label']}</label> " . 
+                "<span class='error-message' id='{$this->properties['name']}_message'></span>" . 
+                "<select id='{$this->properties['name']}' type='$type' value='$value'>";
+            foreach($this->properties['options'] as $option)
+            {
+                $html .= "<option value='{$option}'>{$option}</option>";
+            }
+            $html .= "</select>";
+                
+            return array(
+                'html' => $html,
+                'validation' => $validation,
+                'get_data' => $getData
+            );            
+        }
+        else
+        {
+            return array(
+                'html' => "<label>{$this->properties['label']}</label>
+                    <span class='error-message' id='{$this->properties['name']}_message'></span>
+                    <input id='{$this->properties['name']}' type='$type' value='$value' />",
+                'validation' => $validation,
+                'get_data' => $getData
+            );
+        }
     }
 }
