@@ -1,6 +1,8 @@
 <?php
+namespace anyen\widgets\web;
+use anyen\widgets\WebWidget;
 
-class WebFunctionWidget extends WebWidget
+class FunctionWidget extends WebWidget
 {
     public function render()
     {

@@ -1,4 +1,6 @@
 <?php
+namespace anyen;
+
 class wizard_logic
 {
     /**

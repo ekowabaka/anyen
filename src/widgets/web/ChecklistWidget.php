@@ -1,5 +1,8 @@
 <?php
-class WebChecklistWidget extends WebWidget
+namespace anyen\widgets\web;
+use anyen\widgets\WebWidget;
+
+class ChecklistWidget extends WebWidget
 {
     public function render() {
         $response = $this->wizard->executeCallback($this->properties['function_name'], array());

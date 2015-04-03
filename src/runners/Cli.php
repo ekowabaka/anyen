@@ -23,16 +23,12 @@
  * 
  */
 
-require_once "widgets/CliWidget.php";
-require_once "widgets/cli/CliTextInputWidget.php";
-require_once "widgets/cli/CliTextWidget.php";
-require_once "widgets/cli/CliFunctionWidget.php";
-require_once "widgets/cli/CliChecklistWidget.php";
+namespace anyen\runners;
 
 /**
- * A this for running wizards on the command line.
+ * A class for running wizards on the command line.
  */
-class AnyenCli extends Anyen
+class Cli extends \anyen\Runner
 {
     /**
      * Used to keep track of the last page rendered so in cases where the page

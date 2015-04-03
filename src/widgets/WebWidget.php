@@ -23,13 +23,15 @@
  * 
  */
 
+namespace anyen\widgets;
+
 /**
  * An abstract web widget class. Widgets are used by the various runners to provide
  * interface elements for user interaction.
  * 
  * @author James Ainooson <jainooson@gmail.com> 
  */
-abstract class WebWidget 
+abstract class WebWidget
 {
     protected $properties;
     

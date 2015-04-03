@@ -1,6 +1,8 @@
 <?php
+namespace anyen\widgets\web;
+use anyen\widgets\WebWidget;
 
-class WebTextInputWidget extends WebWidget
+class TextInputWidget extends WebWidget
 {    
     public function render() 
     {

@@ -23,16 +23,14 @@
  * 
  */
 
-require_once "AnyenCli.php";
-require_once __DIR__ . "../../vendor/spyc/spyc.php";
-require_once "wizard_logic.php";
+namespace anyen;
 
 /**
  * Main class for the anyen wizard framework.
  * 
  * @author James Ainooson 
  */
-abstract class Anyen
+abstract class Runner
 {   
     /**
      * Status of a wizard page which requires to be repeated
@@ -130,16 +128,16 @@ abstract class Anyen
     {   
         if(defined('STDOUT'))
         {
-            $runner = new AnyenCli();
+            $runner = new runners\Cli();
         }
         else
         {
-            $runner = new AnyenWeb();
+            $runner = new runners\Web();
         }
         
         if(file_exists($wizardScript))
         {
-            $wizard = Spyc::YAMLLoad(file_get_contents($wizardScript));
+            $wizard = \Spyc::YAMLLoad(file_get_contents($wizardScript));
             $runner->setWizardDescription($wizard);
         }
         else
@@ -179,7 +177,7 @@ abstract class Anyen
     {
         if(method_exists($this->wizardLogicObject, $callback))
         {
-            $method = new ReflectionMethod($this->getName(), $callback);
+            $method = new \ReflectionMethod($this->getName(), $callback);
             return $method->invokeArgs($this->wizardLogicObject, $arguments);
         }
         
@@ -211,7 +209,7 @@ abstract class Anyen
      */
     public function repeatPage()
     {
-        $this->status = Anyen::STATUS_REPEAT;
+        $this->status = self::STATUS_REPEAT;
     }
     
     /**
@@ -220,7 +218,7 @@ abstract class Anyen
      */
     public function terminate()
     {
-        $this->status = Anyen::STATUS_TERMINATE;
+        $this->status = self::STATUS_TERMINATE;
     }
     
     /**
@@ -265,18 +263,18 @@ abstract class Anyen
     
     public function runPage($wizard)
     {
-        $this->status = Anyen::STATUS_CONTINUE;
+        $this->status = self::STATUS_CONTINUE;
         $this->renderPage($wizard);
     }
     
     public function resetStatus()
     {
-        $this->status = Anyen::STATUS_CONTINUE;
+        $this->status = self::STATUS_CONTINUE;
     }
     
     public function loadWidget($widget, $scope)
     {
-        $widgetClass = self::getClassName("{$scope}_{$widget['type']}_widget");
+        $widgetClass = "\\anyen\\widgets\\{$scope}\\" . self::getClassName($widget['type']) . 'Widget';
         $widgetObject = new $widgetClass($widget);
         $widgetObject->setWizard($this);
         return $widgetObject;

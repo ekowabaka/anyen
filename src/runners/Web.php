@@ -1,14 +1,11 @@
 <?php
+namespace anyen\runners;
+
+use anyen\Runner;
 
 session_start();
 
-require_once "widgets/WebWidget.php";
-require_once "widgets/web/WebTextInputWidget.php";
-require_once "widgets/web/WebTextWidget.php";
-require_once "widgets/web/WebFunctionWidget.php";
-require_once "widgets/web/WebChecklistWidget.php";
-
-class AnyenWeb extends Anyen
+class Web extends Runner
 {
     private $banner;
     private $pageNumber;
@@ -65,7 +62,7 @@ class AnyenWeb extends Anyen
         $message_type = $_SESSION['message_type'];
         unset($_SESSION['message']);
         
-        require __DIR__ . "/templates/web/main.tpl.php";
+        require __DIR__ . "/../templates/web/main.tpl.php";
     }
     
     protected function go($params)
@@ -100,10 +97,10 @@ class AnyenWeb extends Anyen
             
             switch($this->getStatus())
             {
-                case Anyen::STATUS_REPEAT:
+                case Runner::STATUS_REPEAT:
                     break;
 
-                case Anyen::STATUS_TERMINATE:
+                case Runner::STATUS_TERMINATE:
                     $this->pageNumber = count($wizard);
                     break;
                 
@@ -121,11 +118,11 @@ class AnyenWeb extends Anyen
 
         switch($this->getStatus())
         {
-            case Anyen::STATUS_REPEAT:
+            case Runner::STATUS_REPEAT:
                 // Do nothing
                 continue;
 
-            case Anyen::STATUS_TERMINATE:
+            case Runner::STATUS_TERMINATE:
                 $this->pageNumber = count($wizard);
                 continue;
         }
