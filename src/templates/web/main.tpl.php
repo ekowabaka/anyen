@@ -4,7 +4,7 @@
         <style>
             body{
                 background-color:#f0f0f0;
-                font-family: sans;
+                font-family: "Open Sans", sans;
             }
             
             #widgets_wrapper{
@@ -23,12 +23,16 @@
             }
             
             #controls_wrapper{
-                padding:10px;
+                padding:15px;
             }
             
             #controls_wrapper a{
                 display:inline-block;
                 padding:10px;
+                text-decoration: none;
+                color:#fff;
+                background-color:#52bb5d;
+                font-weight: bold;
             }
             
             h1{
