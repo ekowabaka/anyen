@@ -137,7 +137,8 @@ abstract class Runner
         
         if(file_exists($wizardScript))
         {
-            $wizard = \Spyc::YAMLLoad(file_get_contents($wizardScript));
+            require_once "functions.php";
+            require $wizardScript;
             $runner->setWizardDescription($wizard);
         }
         else
