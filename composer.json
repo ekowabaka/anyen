@@ -1,10 +1,6 @@
 {
     "name": "ekowabaka/anyen",
     "description": "A simple wizard creation tool. Anyen helps you to create wizards that work both on the CLI and the web interface.",
-    "require": {
-        "ntentan/honam": "0.*",
-        "ekowabaka/clearice": "0.*"
-    },
     "license": "MIT",
     "authors": [
         {
