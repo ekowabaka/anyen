@@ -5,7 +5,7 @@ use anyen\widgets\CliWidget;
 class ChecklistWidget extends CliWidget
 {
     public function run() {
-        $response = $this->wizard->executeCallback($this->properties['function_name'], array());
+        $response = $this->properties['function']($this->wizard);
         echo "\n";
         foreach($response as $check => $value)
         {

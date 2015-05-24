@@ -137,7 +137,7 @@ abstract class Runner
         
         if(file_exists($wizardScript))
         {
-            require_once "functions.php";
+            require_once "wizard/functions.php";            
             require $wizardScript;
             $runner->setWizardDescription($wizard);
         }
@@ -146,44 +146,12 @@ abstract class Runner
             throw new Exception("$wizardScript not found!");
         }
         
-        preg_match("/(?<wizard_script>.*)(?<extension>\.yml|\.yaml)/i", $wizardScript, $matches);
-        
-        $wizardName = basename($matches['wizard_script']);
-        $runner->setName($wizardName);
-        
-        $wizardClassFile = "{$matches['wizard_script']}.php";
-        
-        if(file_exists($wizardClassFile))
-        {
-            require $wizardClassFile;
-            $runner->setLogicObject(new $wizardName());
-        }
-        
         $runner->go($params);   
     }
     
     protected function getNumberOfPages()
     {
         return count($this->wizardDescription);
-    }
-
-
-    /**
-     * Utility method for executing callbacks.
-     * 
-     * @param string $callback
-     * @return boolean 
-     */
-    public function executeCallback($callback, $arguments = array(), $throwException = false)
-    {
-        if(method_exists($this->wizardLogicObject, $callback))
-        {
-            $method = new \ReflectionMethod($this->getName(), $callback);
-            return $method->invokeArgs($this->wizardLogicObject, $arguments);
-        }
-        
-        if($throwException) throw new Exception ("Method not found $callback");
-        return false;
     }
     
     /**

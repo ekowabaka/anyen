@@ -7,7 +7,7 @@ class FunctionWidget extends WebWidget
     public function render()
     {
         ob_start();
-        $this->wizard->executeCallback($this->properties['function_name'], array(), true);
+        $this->properties['function']($this->wizard);
         return array(
             'html' => ob_get_clean()
         );

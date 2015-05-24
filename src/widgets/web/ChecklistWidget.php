@@ -5,7 +5,7 @@ use anyen\widgets\WebWidget;
 class ChecklistWidget extends WebWidget
 {
     public function render() {
-        $response = $this->wizard->executeCallback($this->properties['function_name'], array());
+        $response = $this->properties['function']($this->wizard);
         $html = "<ul class='checklist'>";
         foreach($response as $check => $value)
         {

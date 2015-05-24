@@ -71,10 +71,14 @@ class Web extends Runner
         $this->setCallbackObject($params['callback_object']);  
         $this->banner = $params['banner'];
         $this->data = isset($_SESSION['anyen_data']) ? unserialize($_SESSION['anyen_data']) : array();
+        
+        $currentPage = filter_input(INPUT_GET, 'p');
+        $hash = filter_input(INPUT_GET, 'h');
+        $loopBlocker = filter_input(INPUT_GET, 'a');
                 
-        if($_GET['p'] != '')
+        if($currentPage != '')
         {
-            $this->pageNumber = $_GET['p'];
+            $this->pageNumber = $currentPage;
         }
         else
         {
@@ -83,17 +87,13 @@ class Web extends Runner
         
         $this->hash = $this->getHash($this->pageNumber);        
         $page = $wizard[$this->pageNumber];
-        
-        /* $_GET['h'] represents the hash 
-         * $_GET['p'] represents the page number
-         * $_GET['a'] is a constant used to prevent a redirect loop
-         */
-        if($this->hash == $_GET['h'] && $this->pageNumber == $_GET['p'] && $_GET['a'] == 'n')
+
+        // We are moving to another page
+        if($this->hash == $hash && $this->pageNumber == $currentPage && $loopBlocker == 'n')
         {            
-            parse_str($_GET['d'], $this->data);
+            parse_str(filter_input(INPUT_GET, 'd'), $this->data);
             $this->data = array_merge(unserialize($_SESSION['anyen_data']), $this->data);
-            
-            $this->executeCallback("{$page['page']}_route_callback");
+            $page['onroute']($this);
             
             switch($this->getStatus())
             {
@@ -109,12 +109,12 @@ class Web extends Runner
             }
             $newHash = $this->getHash($this->pageNumber);
             $_SESSION['anyen_data'] = serialize($this->data);                    
-            header("Location: ?p={$this->pageNumber}&h={$newHash}" . $extraQuery);
+            header("Location: ?p={$this->pageNumber}&h={$newHash}");
             return;
         }        
 
         $this->resetStatus();
-        $this->executeCallback("{$page['page']}_render_callback");
+        $page['onrender']($this);
 
         switch($this->getStatus())
         {

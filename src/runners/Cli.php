@@ -72,11 +72,7 @@ class Cli extends \anyen\Runner
      * @param type $widget 
      */
     private function renderWidget($widget)
-    {
-        /*$widgetClass = self::getClassName("cli_{$widget['type']}_widget");
-        $widgetObject = new $widgetClass($widget);
-        $widgetObject->setWizard($this);*/
-        
+    {   
         $response = $this->loadWidget($widget, 'cli')->run();
         if(is_array($response))
         {
@@ -97,7 +93,7 @@ class Cli extends \anyen\Runner
             $page = $wizard[$i];
             
             $this->resetStatus();
-            $this->executeCallback("{$page['page']}_render_callback");
+            $page['onrender']($this);
             
             switch($this->getStatus())
             {
@@ -111,7 +107,7 @@ class Cli extends \anyen\Runner
             }
             
             $this->runPage($page);
-            $this->executeCallback("{$page['page']}_route_callback");
+            $page['onroute']($this);
             
             switch($this->getStatus())
             {
