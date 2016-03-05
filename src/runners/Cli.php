@@ -88,7 +88,7 @@ class Cli extends \anyen\Runner
         $wizard = $this->wizardDescription;
         $this->setCallbackObject($params['callback_object']);
         
-        for($i = 0; $i < count($wizard); $i++)
+        for($i = $this->startPage; $i < count($wizard); $i++)
         {
             $page = $wizard[$i];
             

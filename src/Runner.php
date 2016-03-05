@@ -90,6 +90,8 @@ abstract class Runner
      */
     protected $wizardLogicObject;
     
+    protected $startPage = 0;
+    
     public function setName($name)
     {
         $this->name = $name;
@@ -116,36 +118,50 @@ abstract class Runner
         $this->wizardDescription = $wizard;
     }
     
+    private static function getRunner()
+    {
+        if(defined('STDOUT'))
+        {
+            return new runners\Cli();
+        }
+        else
+        {
+            return new runners\Web();
+        }        
+    }
+    
+    protected function getBanner($params)
+    {
+        if(isset($params['banner']))
+        {
+            return $params['banner'];
+        }
+        else if(isset($this->wizardDescription[0]['banner']))
+        {
+            $this->startPage = 1;
+            return $this->wizardDescription[0]['banner'];
+        }
+    }
+
     /**
      * The main entry point for the anyen framework's wizards. Users of the 
      * framework call this method to execute their wizards.
      * 
-     * @param string $wizardScript A path to the wizard script
-     * @param array $params An array of parameters
+     * @param script $wizardScript A link to the php script which describes the wizard.
+     * @param array $params An array of parameters for the wizard.
      * @throws Exception 
      */
-    public static function run($wizardScript, $params = array())
+    public static function run($wizardScript, $params = [])
     {   
-        if(defined('STDOUT'))
-        {
-            $runner = new runners\Cli();
-        }
-        else
-        {
-            $runner = new runners\Web();
-        }
-        
+        $runner = self::getRunner();
         if(file_exists($wizardScript))
         {
-            require_once "wizard/functions.php";            
-            require $wizardScript;
-            $runner->setWizardDescription($wizard);
+            $runner->setWizardDescription(require $wizardScript);
         }
         else
         {
             throw new Exception("$wizardScript not found!");
-        }
-        
+        }            
         $runner->go($params);   
     }
     

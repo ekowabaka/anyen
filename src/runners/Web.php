@@ -31,7 +31,7 @@ class Web extends Runner
         $hash = '';
         for($i = 0; $i <= $pageNumber; $i++)
         {
-            $hash .= $i . $this->wizardDescription[$i]['title'];
+            $hash .= $i . isset($this->wizardDescription[$i]['title']) ? $this->wizardDescription[$i]['title'] : null;
         }
         return md5($hash);
     }
@@ -43,23 +43,20 @@ class Web extends Runner
     protected function renderPage($page)
     {
         $widgets = array();
-        if(is_array($page['widgets']))
+        foreach(isset($page['widgets']) ? $page['widgets'] : [] as $widget)
         {
-            foreach($page['widgets'] as $widget)
-            {
-                $widgets[] = $this->loadWidget($widget, 'web')->render();
-            }
-        }        
+            $widgets[] = $this->loadWidget($widget, 'web')->render();
+        }
         
-        $title = $page['title'];
+        $title = isset($page['title']) ? $page['title'] : '';
         $banner = $this->banner;
         $page_number = $this->pageNumber;
         $hash = $this->hash;
-        if($page_number > 0) $show_back = true;
+        if($page_number > $this->startPage) $show_back = true;
         if($page_number < $this->getNumberOfPages() - 1) $show_next = true;
         $prev_page_number = $page_number - 1;
-        $message = $_SESSION['message'];
-        $message_type = $_SESSION['message_type'];
+        $message = isset($_SESSION['message']) ? $_SESSION['message'] : null;
+        $message_type = isset($_SESSION['message_type']) ? $_SESSION['message'] : null;
         unset($_SESSION['message']);
         
         require __DIR__ . "/../templates/web/main.tpl.php";
@@ -68,8 +65,11 @@ class Web extends Runner
     protected function go($params)
     {
         $wizard = $this->wizardDescription;
-        $this->setCallbackObject($params['callback_object']);  
-        $this->banner = $params['banner'];
+        if(isset($params['callback_object']))
+        {
+            $this->setCallbackObject($params['callback_object']);  
+        }
+        $this->banner = $this->getBanner($params);
         $this->data = isset($_SESSION['anyen_data']) ? unserialize($_SESSION['anyen_data']) : array();
         
         $currentPage = filter_input(INPUT_GET, 'p');
@@ -82,7 +82,7 @@ class Web extends Runner
         }
         else
         {
-            $this->pageNumber = 0;
+            $this->pageNumber = $this->startPage;
         }
         
         $this->hash = $this->getHash($this->pageNumber);        
@@ -93,7 +93,11 @@ class Web extends Runner
         {            
             parse_str(filter_input(INPUT_GET, 'd'), $this->data);
             $this->data = array_merge(unserialize($_SESSION['anyen_data']), $this->data);
-            $page['onroute']($this);
+            
+            if(isset($page['onroute']))
+            {
+                $page['onroute']($this);
+            }
             
             switch($this->getStatus())
             {
@@ -114,7 +118,10 @@ class Web extends Runner
         }        
 
         $this->resetStatus();
-        $page['onrender']($this);
+        if(isset($page['onrender']))
+        {
+            $page['onrender']($this);
+        }
 
         switch($this->getStatus())
         {

@@ -114,7 +114,7 @@
                 var validated = true;
                 
                 <?php foreach($widgets as $widget): ?>
-                <?= $widget['validation'] ?>
+                <?= isset($widget['validation']) ? $widget['validation'] : '' ?>
                 <?php endforeach; ?>
                 
                 return validated;
@@ -127,7 +127,7 @@
                     var data = '';
                     
                     <?php foreach($widgets as $widget): ?>
-                    <?= $widget['get_data'] ?>
+                    <?= isset($widget['get_data']) ? $widget['get_data'] : '' ?>
                     <?php endforeach; ?>  
                     document.location = "?p=<?= $page_number ?>&h=<?= $hash ?>&a=n&d=" + escape(data);
                 }
@@ -151,10 +151,10 @@
                 <?php endforeach; ?>
             </div>
             <div id="controls_wrapper">
-                <?php if($show_back): ?>
-                <a href="?p=<?= $prev_page_number ?>&h=<?= $prev_hash ?>&a=n">  &lt; Back </a>
+                <?php if(isset($show_back) ? $show_back : false): ?>
+                <a href="?p=<?= $prev_page_number ?>&h=<?= isset($prev_hash) ? $prev_hash : '' ?>&a=n">  &lt; Back </a>
                 <?php endif; ?>
-                <?php if($show_next): ?>
+                <?php if(isset($show_next) ? $show_next : false): ?>
                 <a href="#" onclick="goNext()">  Next &gt;  </a>
                 <?php endif; ?>
             </div>
