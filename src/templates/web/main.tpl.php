@@ -137,27 +137,29 @@
     <body>
         <div id="wrapper">
             <h1><?= $banner ?></h1>
-            <div id="widgets_wrapper">
-                <h2><?= $title ?></h2>
-                <?php if($message != ''): ?>
-                <div id="message_box" class='<?= $message_type ?> <?= $message_type ?>_icon'>
-                    <?= $message ?>
+            <form method="POST">
+                <div id="widgets_wrapper">
+                    <h2><?= $title ?></h2>
+                    <?php if($message != ''): ?>
+                    <div id="message_box" class='<?= $message_type ?> <?= $message_type ?>_icon'>
+                        <?= $message ?>
+                    </div>
+                    <?php endif; ?>
+                    <?php foreach($widgets as $widget): ?>
+                    <div class="widget_wrapper">
+                        <?= $widget['html'] ?>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endif; ?>
-                <?php foreach($widgets as $widget): ?>
-                <div class="widget_wrapper">
-                    <?= $widget['html'] ?>
+                <div id="controls_wrapper">
+                    <?php if(isset($show_back) ? $show_back : false): ?>
+                    <input type="submit" name="page_action" value="Back" />
+                    <?php endif; ?>
+                    <?php if(isset($show_next) ? $show_next : false): ?>
+                    <input type="submit" name="page_action" value="Next" />
+                    <?php endif; ?>
                 </div>
-                <?php endforeach; ?>
-            </div>
-            <div id="controls_wrapper">
-                <?php if(isset($show_back) ? $show_back : false): ?>
-                <a href="?p=<?= $prev_page_number ?>&h=<?= isset($prev_hash) ? $prev_hash : '' ?>&a=n">  &lt; Back </a>
-                <?php endif; ?>
-                <?php if(isset($show_next) ? $show_next : false): ?>
-                <a href="#" onclick="goNext()">  Next &gt;  </a>
-                <?php endif; ?>
-            </div>
+            </form>
         </div>
     </body>
 </html>
