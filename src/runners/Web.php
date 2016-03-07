@@ -50,10 +50,14 @@ class Web extends Runner
         
         $title = isset($page['title']) ? $page['title'] : '';
         $banner = $this->banner;
+        
         $page_number = $this->pageNumber;
-        $hash = $this->hash;
-        if($page_number > $this->startPage) $show_back = true;
-        if($page_number < $this->getNumberOfPages() - 1) $show_next = true;
+        
+        if(!isset($page['finish'])) {
+            if($page_number > $this->startPage) $show_back = true;
+            if($page_number < $this->getNumberOfPages() - 1) $show_next = true;
+        }
+        
         $prev_page_number = $page_number - 1;
         $message = isset($_SESSION['message']) ? $_SESSION['message'] : null;
         $message_type = isset($_SESSION['message_type']) ? $_SESSION['message'] : null;

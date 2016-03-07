@@ -1,13 +1,14 @@
 <?php
 namespace anyen\widgets\web;
-use anyen\widgets\WebWidget;
+use anyen\Widget;
 
-class FunctionWidget extends WebWidget
+class FunctionWidget extends Widget
 {
     public function render()
     {
         ob_start();
-        $this->properties['function']($this->wizard);
+        $function = $this->getProperty('function');
+        $function($this->wizard);
         return ob_get_clean();
     }
     

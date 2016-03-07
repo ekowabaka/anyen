@@ -1,11 +1,12 @@
 <?php
 namespace anyen\widgets\web;
-use anyen\widgets\WebWidget;
+use anyen\Widget;
 
-class ChecklistWidget extends WebWidget
+class ChecklistWidget extends Widget
 {
     public function render() {
-        $response = $this->properties['function']($this->wizard);
+        $function = $this->properties['function'];
+        $response = $function($this->wizard);
         $html = "<ul class='checklist'>";
         foreach($response as $check => $value)
         {

@@ -1,11 +1,11 @@
 <?php
 namespace anyen\widgets\web;
-use anyen\widgets\WebWidget;
+use anyen\Widget;
 
-class TextWidget extends WebWidget
+class TextWidget extends Widget
 {    
     public function render() 
     {
-        return "<p>{$this->properties['text']}</p>";
+        return "<p>{$this->getProperty('text')}</p>";
     }
 }

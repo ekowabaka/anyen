@@ -93,4 +93,9 @@ class Wizard
             'function' => $function
         ];
     }
+    
+    public static function finish($url = '')
+    {
+        return ['finish' => true];
+    }
 }

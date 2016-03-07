@@ -230,7 +230,7 @@ abstract class Runner
         {
             return $this->data;
         }
-        else
+        else if(isset($this->data[$key]))
         {
             return $this->data[$key];
         }

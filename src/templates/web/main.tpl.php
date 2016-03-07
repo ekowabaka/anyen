@@ -133,6 +133,10 @@
                     <?php if(isset($show_next) ? $show_next : false): ?>
                     <input type="submit" name="page_action" value="Next" />
                     <?php endif; ?>
+                    <?php if(isset($show_finish) ? $show_finish : false): ?>
+                    <input type="submit" name="page_action" value="Finish" />
+                    <input type="hidden" name="finish_redirect" value="<?= $finish_redirect ?>" />
+                    <?php endif; ?>                    
                 </div>
             </form>
         </div>
