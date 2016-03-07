@@ -108,31 +108,6 @@
             
             
         </style>
-        <script type="text/javascript">
-            function validate()
-            {
-                var validated = true;
-                
-                <?php foreach($widgets as $widget): ?>
-                <?= isset($widget['validation']) ? $widget['validation'] : '' ?>
-                <?php endforeach; ?>
-                
-                return validated;
-            }
-            
-            function goNext()
-            {
-                if(validate())
-                {
-                    var data = '';
-                    
-                    <?php foreach($widgets as $widget): ?>
-                    <?= isset($widget['get_data']) ? $widget['get_data'] : '' ?>
-                    <?php endforeach; ?>  
-                    document.location = "?p=<?= $page_number ?>&h=<?= $hash ?>&a=n&d=" + escape(data);
-                }
-            }
-        </script>
     </head>
     <body>
         <div id="wrapper">
@@ -147,7 +122,7 @@
                     <?php endif; ?>
                     <?php foreach($widgets as $widget): ?>
                     <div class="widget_wrapper">
-                        <?= $widget['html'] ?>
+                        <?= $widget ?>
                     </div>
                     <?php endforeach; ?>
                 </div>

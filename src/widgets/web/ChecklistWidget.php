@@ -13,8 +13,6 @@ class ChecklistWidget extends WebWidget
             $html .= "<li $params>$check</li>";
         }
         $html .= "</ul>";
-        return array(
-            'html' => $html
-        );
+        return $html;
     }    
 }

@@ -6,7 +6,6 @@ class TextInputWidget extends WebWidget
 {    
     public function render() 
     {   
-        $getData = "data += '{$this->properties['name']}=' + escape(document.getElementById('{$this->properties['name']}').value) + '&';";
         $dataValue = $this->wizard->getData($this->properties['name']);
         $value = $dataValue == '' ? $this->properties['default'] : $dataValue;
         $type = $this->properties['masked'] == 'true' ? 'password' : 'text';
@@ -22,21 +21,13 @@ class TextInputWidget extends WebWidget
             }
             $html .= "</select>";
                 
-            return array(
-                'html' => $html,
-                'validation' => $validation,
-                'get_data' => $getData
-            );            
+            return $html;
         }
         else
         {
-            return array(
-                'html' => "<label>{$this->properties['label']}</label>
-                    <span class='error-message' id='{$this->properties['name']}_message'></span>
-                    <input name='{$this->properties['name']}' type='$type' value='$value' />",
-                'validation' => $validation,
-                'get_data' => $getData
-            );
+            return "<label>{$this->properties['label']}</label>
+                <span class='error-message' id='{$this->properties['name']}_message'></span>
+                <input name='{$this->properties['name']}' type='$type' value='$value' />";
         }
     }
 }

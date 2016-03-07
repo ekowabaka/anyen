@@ -8,9 +8,7 @@ class FunctionWidget extends WebWidget
     {
         ob_start();
         $this->properties['function']($this->wizard);
-        return array(
-            'html' => ob_get_clean()
-        );
+        return ob_get_clean();
     }
     
     public function getCallbackObject()

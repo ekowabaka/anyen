@@ -6,8 +6,6 @@ class TextWidget extends WebWidget
 {    
     public function render() 
     {
-        return array(
-            'html' => "<p>{$this->properties['text']}</p>"
-        );
+        return "<p>{$this->properties['text']}</p>";
     }
 }
