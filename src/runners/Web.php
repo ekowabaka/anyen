@@ -26,7 +26,7 @@ class Web extends Runner
      * @param string $pageNumber
      * @return string
      */
-    private function getHash($pageNumber)
+    /*private function getHash($pageNumber)
     {
         $hash = '';
         for($i = 0; $i <= $pageNumber; $i++)
@@ -34,7 +34,7 @@ class Web extends Runner
             $hash .= $i . isset($this->wizardDescription[$i]['title']) ? $this->wizardDescription[$i]['title'] : null;
         }
         return md5($hash);
-    }
+    }*/
     
     /**
      * Renders the page 
@@ -70,11 +70,9 @@ class Web extends Runner
             $this->setCallbackObject($params['callback_object']);  
         }
         $this->banner = $this->getBanner($params);
-        $this->data = isset($_SESSION['anyen_data']) ? unserialize($_SESSION['anyen_data']) : array();
+        $this->data = isset($_SESSION['anyen_data']) ? $_SESSION['anyen_data'] : array();
         
-        $currentPage = filter_input(INPUT_GET, 'p');
-        $hash = filter_input(INPUT_GET, 'h');
-        $loopBlocker = filter_input(INPUT_GET, 'a');
+        $currentPage = $_SESSION['current_page'];
                 
         if($currentPage != '')
         {
@@ -85,14 +83,44 @@ class Web extends Runner
             $this->pageNumber = $this->startPage;
         }
         
-        $this->hash = $this->getHash($this->pageNumber);        
         $page = $wizard[$this->pageNumber];
-
+        
+        if(filter_input(INPUT_POST, 'page_action') == 'Next')
+        {
+            $data = filter_input_array(INPUT_POST);
+            unset($data['page_action']);
+            $this->data = array_merge($this->data, $data);
+            if(isset($page['onroute']))
+            {
+                $page['onroute']($this);
+            }            
+            switch($this->getStatus())
+            {
+                case Runner::STATUS_REPEAT: break;
+                case Runner::STATUS_TERMINATE:
+                    $this->pageNumber = count($wizard);
+                    break;
+                default: $this->pageNumber++;
+            }
+            
+            $_SESSION['anyen_data'] = $this->data;
+            $_SESSION['current_page'] = $this->pageNumber;
+            header("Location: ./");
+            return;
+        }
+        else if(filter_input(INPUT_POST, 'page_action') == 'Back')
+        {
+            $this->pageNumber--;
+            $_SESSION['current_page'] = $this->pageNumber;
+            header("Location: ./");
+            return;
+        }        
+        
         // We are moving to another page
-        if($this->hash == $hash && $this->pageNumber == $currentPage && $loopBlocker == 'n')
+        /*if($this->hash == $hash && $this->pageNumber == $currentPage && $loopBlocker == 'n')
         {            
             parse_str(filter_input(INPUT_GET, 'd'), $this->data);
-            $this->data = array_merge(unserialize($_SESSION['anyen_data']), $this->data);
+            $this->data = array_merge($_SESSION['anyen_data'], $this->data);
             
             if(isset($page['onroute']))
             {
@@ -112,10 +140,10 @@ class Web extends Runner
                     $this->pageNumber++;
             }
             $newHash = $this->getHash($this->pageNumber);
-            $_SESSION['anyen_data'] = serialize($this->data);                    
+            $_SESSION['anyen_data'] = $this->data;
             header("Location: ?p={$this->pageNumber}&h={$newHash}");
             return;
-        }        
+        }*/
 
         $this->resetStatus();
         if(isset($page['onrender']))
@@ -135,6 +163,6 @@ class Web extends Runner
         }
 
         $this->runPage($page);
-        $_SESSION['anyen_data'] = serialize($this->data);        
+        $_SESSION['anyen_data'] = $this->data;        
     }
 }
