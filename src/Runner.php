@@ -230,6 +230,15 @@ abstract class Runner
         {
             return $this->data;
         }
+        else if(is_array($key))
+        {
+            $respose = [];
+            foreach($key as $i)
+            {
+                $respose[$i] = $this->data[$i];
+            }
+            return $respose;
+        }
         else if(isset($this->data[$key]))
         {
             return $this->data[$key];
