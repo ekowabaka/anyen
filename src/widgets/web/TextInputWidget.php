@@ -15,9 +15,11 @@ class TextInputWidget extends Widget
             $html = "<label>{$this->getProperty('label')}</label> " . 
                 "<span class='error-message' id='{$this->getProperty('name')}_message'></span>" . 
                 "<select name='{$this->getProperty('name')}' type='$type' value='$value'>";
-            foreach($this->getProperty('options') as $option)
+            $valueSource = $this->getProperty('keys_as_values');
+            foreach($this->getProperty('options') as $key => $option)
             {
-                $html .= "<option value='{$option}'>{$option}</option>";
+                $value = $valueSource ? $key : $option;
+                $html .= "<option value='{$value}'>{$option}</option>";
             }
             $html .= "</select>";
                 
