@@ -1,18 +1,17 @@
 <?php
 namespace anyen\widgets\cli;
-use anyen\widgets\CliWidget;
 
-class TextInputWidget extends CliWidget
+class TextInputWidget extends \anyen\Widget
 {
-    public function run()
+    public function render()
     {
         $response = $this->getUserResponse(
-            $this->properties['label'],
-            $this->properties['options'],
-            $this->properties['default'],
-            $this->properties['required']
+            $this->getProperty('label'),
+            $this->getProperty('options'),
+            $this->getProperty('default'),
+            $this->getProperty('required')
         );
-        return array($this->properties['name'] => $response);
+        return array($this->getProperty('name') => $response);
     }
 
     private function getUserResponse($question, $answers=null, $default=null, $required = false)

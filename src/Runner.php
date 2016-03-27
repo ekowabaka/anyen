@@ -69,7 +69,7 @@ abstract class Runner
      * to be used by the wizards scripts for their operations.
      * @var mixed
      */
-    protected $callbackObject;
+    private $callbackObject;
     
     /**
      * Wizard's name. The name of a given wizard. Names are initially derived
@@ -83,14 +83,14 @@ abstract class Runner
     
     protected $title;
     
-    /**
-     * An instance of the object responsible for providing the 3rd party logic
-     * of the wizard
-     * @param type $name 
-     */
-    protected $wizardLogicObject;
-    
     protected $startPage = 0;
+    
+    public function __construct($params)
+    {
+        if(isset($params['callback'])) {
+            $this->callbackObject = $params['callback'];
+        }
+    }
     
     public function setName($name)
     {
@@ -102,31 +102,20 @@ abstract class Runner
         return $this->name;
     }
     
-    public function setLogicObject($logicObject)
-    {
-        $logicObject->setWizard($this);
-        $this->wizardLogicObject = $logicObject;
-    }
-    
-    public function getLogicObject($logicObject)
-    {
-        return $this->logicObject;
-    }
-    
     public function setWizardDescription($wizard)
     {
         $this->wizardDescription = $wizard;
     }
     
-    private static function getRunner()
+    private static function getRunner($params)
     {
         if(defined('STDOUT'))
         {
-            return new runners\Cli();
+            return new runners\Cli($params);
         }
         else
         {
-            return new runners\Web();
+            return new runners\Web($params);
         }        
     }
     
@@ -142,6 +131,11 @@ abstract class Runner
             return $this->wizardDescription[0]['banner'];
         }
     }
+    
+    public function getCallbackObject()
+    {
+        return $this->callbackObject;
+    }
 
     /**
      * The main entry point for the anyen framework's wizards. Users of the 
@@ -153,7 +147,7 @@ abstract class Runner
      */
     public static function run($wizardScript, $params = [])
     {   
-        $runner = self::getRunner();
+        $runner = self::getRunner($params);
         if(file_exists($wizardScript))
         {
             $runner->setWizardDescription(require $wizardScript);
@@ -243,16 +237,6 @@ abstract class Runner
         {
             return $this->data[$key];
         }
-    }
-    
-    public function setCallbackObject($object)
-    {
-        $this->callbackObject = $object;
-    }
-    
-    public function getCallbackObject()
-    {
-        return $this->callbackObject;
     }
     
     public function runPage($wizard)

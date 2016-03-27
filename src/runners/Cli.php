@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright (c) 2012 James Ekow Abaka Ainooson
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -35,17 +35,19 @@ class Cli extends \anyen\Runner
      * needs to be rendered again the titles are not rendered.
      * @var string
      */
-    private $lastPage = null;
+    private $lastPageTitle = null;
+    
+    private $lastWidgetType = null;
     
     protected function renderPage($page) 
     {
         // Prevent the annoying repeated rendering of the title makes console clumsy
-        if($page['page'] != $this->lastPage)
+        if($page['title'] != $this->lastPageTitle)
         {
             echo "\n{$page['title']}\n";
             echo str_repeat("=", strlen($page['title'])) . "\n";
         }
-        $this->lastPage = $page['page'];
+        $this->lastPageTitle = $page['title'];
         
         if(is_array($page['widgets']))
         {
@@ -73,7 +75,8 @@ class Cli extends \anyen\Runner
      */
     private function renderWidget($widget)
     {   
-        $response = $this->loadWidget($widget, 'cli')->run();
+        $this->lastWidgetType = $widget['type'];
+        $response = $this->loadWidget($widget, 'cli')->render();
         if(is_array($response))
         {
             foreach($response as $key => $value)
@@ -86,12 +89,10 @@ class Cli extends \anyen\Runner
     protected function go($params)
     {
         $wizard = $this->wizardDescription;
-        $this->setCallbackObject($params['callback_object']);
         
         for($i = $this->startPage; $i < count($wizard); $i++)
         {
             $page = $wizard[$i];
-            
             $this->resetStatus();
             $page['onrender']($this);
             
@@ -120,9 +121,10 @@ class Cli extends \anyen\Runner
                     break;
             }
             
-            echo "\nPress ENTER to continue ...";
-            fgets(STDIN);
-            echo "\n";
+            if($this->lastWidgetType != 'text_input') {
+                echo "\nPress ENTER to continue ...";
+                $char = fgetc(STDIN);                
+            }
         }        
     }
 }

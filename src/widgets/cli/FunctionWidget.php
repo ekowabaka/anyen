@@ -1,17 +1,11 @@
 <?php
 namespace anyen\widgets\cli;
-use anyen\widgets\CliWidget;
 
-class FunctionWidget extends CliWidget
+class FunctionWidget extends \anyen\Widget
 {
-    public function run()
+    public function render()
     {
         $this->properties['function']($this->wizard);
-    }
-    
-    public function getCallbackObject()
-    {
-        return $this->wizard->getCallbackObject();
     }
     
     public function getData()

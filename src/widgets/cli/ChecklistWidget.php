@@ -1,10 +1,9 @@
 <?php
 namespace anyen\widgets\cli;
-use anyen\widgets\CliWidget;
 
-class ChecklistWidget extends CliWidget
+class ChecklistWidget extends \anyen\Widget
 {
-    public function run() {
+    public function render() {
         $response = $this->properties['function']($this->wizard);
         echo "\n";
         foreach($response as $check => $value)

@@ -1,11 +1,10 @@
 <?php
 namespace anyen\widgets\cli;
-use anyen\widgets\CliWidget;
 
-class TextWidget extends CliWidget
+class TextWidget extends \anyen\Widget
 {
-    public function run()
+    public function render()
     {
-        echo wordwrap($this->properties['text'], 80) . "\n";
+        echo wordwrap($this->getProperty('text'), 80) . "\n";
     }    
 }

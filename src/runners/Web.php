@@ -18,25 +18,6 @@ class Web extends Runner
     }
     
     /**
-     * Generates a unique hash for the page. This is used in ensuring that
-     * the user hasn't jumped any steps in the progress of the wizard by
-     * altering the ?p attribute in the URL query.
-     * 
-     * @todo this method should use a stronger hash with some randomized values
-     * @param string $pageNumber
-     * @return string
-     */
-    /*private function getHash($pageNumber)
-    {
-        $hash = '';
-        for($i = 0; $i <= $pageNumber; $i++)
-        {
-            $hash .= $i . isset($this->wizardDescription[$i]['title']) ? $this->wizardDescription[$i]['title'] : null;
-        }
-        return md5($hash);
-    }*/
-    
-    /**
      * Renders the page 
      * @param string $page
      */
@@ -69,10 +50,6 @@ class Web extends Runner
     protected function go($params)
     {
         $wizard = $this->wizardDescription;
-        if(isset($params['callback_object']))
-        {
-            $this->setCallbackObject($params['callback_object']);  
-        }
         $this->banner = $this->getBanner($params);
         $this->data = isset($_SESSION['anyen_data']) ? $_SESSION['anyen_data'] : array();
         
