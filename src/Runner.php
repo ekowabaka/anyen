@@ -154,7 +154,7 @@ abstract class Runner
         }
         else
         {
-            throw new Exception("$wizardScript not found!");
+            throw new \Exception("$wizardScript not found!");
         }            
         $runner->go($params);   
     }
