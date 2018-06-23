@@ -1,101 +1,135 @@
 <?php
+
 namespace anyen;
 
-/**
- * Description of Wizard
- *
- * @author ekow
- */
 class Wizard
-{   
-    public static function banner($text)
+{
+    /**
+     * Status of a wizard page execution which requires the current page to be repeated
+     */
+    const REPEAT = 'repeat';
+
+    /**
+     * Status of a wizard page execution which ensures that the next page is loaded
+     */
+    const CONTINUE = 'continue';
+
+    /**
+     * Status of a wizard page execution which terminates the execution of the wizard
+     */
+    const TERMINATE = 'end';
+
+    /**
+     * The data that has been collected by the wizard so far.
+     * Every page that is executed returns an associative array which may represent user input or any other data
+     * generated during the execution of the page. All arrays returned are merged into this single variable.
+     *
+     * @var array
+     */
+    private $data;
+
+    /**
+     * The status set by the last wizard page.
+     * @var string
+     */
+    private $status;
+
+    /**
+     * A user supplied callback object.
+     * This object is passed around during wizard execution. It is intended to be used by the wizards scripts for
+     * their own operations.
+     *
+     * @var mixed
+     */
+    private $callback;
+
+    /**
+     * Wizard constructor.
+     * @param $callback
+     */
+    public function __construct($callback)
     {
-        return ['banner' => $text];
+        $this->callback = $callback;
     }
 
-    public static function page()
+    /**
+     * Set the status of the current wizard page
+     * @param $status
+     */
+    public function setStatus($status)
     {
-        $args = func_get_args();
-        $title = array_shift($args);
-        $widgets = [];
-        $options = [
-            'onrender' => function(){},
-            'onroute' => function(){}
-        ];
-
-        foreach($args as $arg)
-        {
-            if(isset($arg['type']))
-            {
-                $widgets[] = $arg;
-            }
-            else
-            {
-                $options = array_merge($options, $arg);
-            }
-        }
-
-        return array_merge(
-            [
-                'title' => $title,
-                'widgets' => $widgets
-            ], 
-            $options
-        );
+        $this->status = $status;
     }
 
-    public static function text($text)
+    /**
+     * Get the status of the current wizard page
+     * @return string
+     */
+    public function getStatus()
     {
-        return [
-            'type' => 'text',
-            'text' => $text
-        ];
+        return $this->status;
     }
 
-    public static function checklist($callable)
+    /**
+     * Set a value to the wizards internal data.
+     * @param $key
+     * @param $value
+     */
+    public function setValue($key, $value)
     {
-        return [
-            'type' => 'checklist',
-            'function' => $callable
-        ];
+        $this->data[$key] = $value;
     }
 
-    public static function input($label, $name, $options = array())
+    /**
+     * Get a value from the wizard's internal data.
+     * @param $key
+     * @return mixed
+     */
+    public function getValue($key)
     {
-        return array_merge(
-            [
-                'type' => 'text_input',
-                'label' => $label,
-                'name' => $name
-            ], 
-            $options
-        );
+        return $this->data[$key];
     }
 
-    public static function onroute($function)
+    public function getData()
     {
-        return [
-            'onroute' => $function
-        ];
+        return $this->data;
     }
 
-    public static function onrender($function)
+    public function setData($data)
     {
-        return [
-            'onrender' => $function
-        ];
+        $this->data = $data;
     }
 
-    public static function call($function)
+    public function getCallback()
     {
-        return [
-            'type' => 'function',
-            'function' => $function
-        ];
+        return $this->callback;
     }
-    
-    public static function finish($url = '')
+
+    /**
+     * Called by the user's wizard functions to set the status of the wizard
+     * so it repeats the current page.
+     */
+    protected function repeatPage()
     {
-        return ['finish' => true];
+        $this->status = self::REPEAT;
+    }
+
+    /**
+     * Called by the user's wizard functions to set the status of the wizard
+     * so the entire wizard is terminated.
+     */
+    protected function terminate()
+    {
+        $this->status = self::TERMINATE;
+    }
+
+    protected function proceed()
+    {
+        $this->status = self::CONTINUE;
+    }
+
+    public function showMessage($message, $type = 'info')
+    {
+        $_SESSION['message'] = $message;
     }
 }

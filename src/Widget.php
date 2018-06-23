@@ -19,46 +19,51 @@ abstract class Widget
      * The properties which were passed to the widget by the runner. Properties
      * are mostly defined in the yaml files which are used to describe the
      * wizard.
-     * 
+     *
      * @var array
      */
     private $properties;
-    
+
     /**
      * An instance of the wizard which is currently running.
-     * 
-     * @var Anyen
+     *
+     * @var Wizard
      */
-    protected $wizard;    
-    
-    public function __construct($widgetProperties)
+    protected $wizard;
+
+    public function __construct($widgetProperties, $wizard)
     {
         $this->properties = $widgetProperties;
-    }    
-    
+        $this->wizard = $wizard;
+    }
+
     protected function getProperty($key)
     {
-        if(isset($this->properties[$key]))
-        {
+        if (isset($this->properties[$key])) {
             return $this->properties[$key];
         }
     }
-    
+
     protected function setProperties($properties)
     {
         $this->properties = $properties;
     }
-    
+
     /**
      * Set the wizard that this widget is associated with. This is normally called
      * by the runner.
-     * 
-     * @param type $wizard 
+     *
+     * @return  Wizard
      */
-    public function setWizard($wizard)
+    public function getWizard()
     {
-        $this->wizard = $wizard;
-    }    
-    
-    public abstract function render();    
+        return $this->wizard;
+    }
+
+    public abstract function render();
+
+    public function validate()
+    {
+        return true;
+    }
 }
