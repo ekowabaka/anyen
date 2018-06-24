@@ -43,6 +43,8 @@ class Wizard
      */
     private $callback;
 
+    private $messages = [];
+
     /**
      * Wizard constructor.
      * @param $callback
@@ -87,7 +89,7 @@ class Wizard
      */
     public function getValue($key)
     {
-        return $this->data[$key];
+        return $this->data[$key] ?? null;
     }
 
     public function getData()
@@ -130,6 +132,11 @@ class Wizard
 
     public function showMessage($message, $type = 'info')
     {
-        $_SESSION['message'] = $message;
+        $this->messages[] = ['message' => $message, 'type' => $type];
+    }
+
+    public function getMessages()
+    {
+        return $this->messages;
     }
 }

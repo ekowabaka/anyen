@@ -14,6 +14,7 @@ class Web extends Runner
 {
     private $banner;
     private $pageNumber;
+    private $widgets;
 
     public function __construct($params = [])
     {
@@ -25,49 +26,56 @@ class Web extends Runner
      * Renders the page
      * @param string $page
      */
-    protected function renderPage($page)
+    protected function renderPage($page, $widgets)
     {
-        $widgets = array();
-        foreach (isset($page['widgets']) ? $page['widgets'] : [] as $widget) {
-            $widgets[] = $this->loadWidget($widget, 'web')->render();
-        }
-
         $title = isset($page['title']) ? $page['title'] : '';
+        $widgets = array_map(function ($w) {
+            return $w->render();
+        }, $widgets);
         $banner = $this->banner;
-
         $page_number = $this->pageNumber;
 
         if (!isset($page['finish'])) {
             if ($page_number > $this->startPage) $show_back = true;
             if ($page_number < $this->getNumberOfPages() - 1) $show_next = true;
         }
-
         $prev_page_number = $page_number - 1;
-        $message = isset($_SESSION['message']) ? $_SESSION['message'] : null;
-        $message_type = isset($_SESSION['message_type']) ? $_SESSION['message'] : null;
-        unset($_SESSION['message']);
+        $messages = $_SESSION['messages'] ?? null;
+        unset($_SESSION['messages']);
 
         require __DIR__ . "/../templates/web/main.tpl.php";
+    }
+
+    private function loadWidgets($pageWidgets)
+    {
+        $widgets = [];
+        foreach (isset($pageWidgets) ? $pageWidgets : [] as $widget) {
+            $widgets[] = $this->loadWidget($widget, 'web');
+        }
+        return $widgets;
     }
 
     protected function go($params)
     {
         $this->wizard->setData($_SESSION['anyen_data'] ?? []);
-        $this->pageNumber = $_SESSION['current_page'];
+        $this->pageNumber = $_SESSION['current_page'] ?? 0;
 
-        if($this->pageNumber > count($this->wizardDescription)) {
+        if ($this->pageNumber > count($this->wizardDescription)) {
             $this->pageNumber = count($this->wizardDescription) - 1;
         }
 
         $page = $this->wizardDescription[$this->pageNumber];
+        $widgets = $this->loadWidgets($page['widgets']);
         $this->banner = $page['banner'] ?? $params['banner'];
         $pageAction = filter_input(INPUT_POST, 'page_action');
-        $uri = filter_input(INPUT_SERVER, 'REQUEST_URI');
+        $uri = explode('?', filter_input(INPUT_SERVER, 'REQUEST_URI'))[0];
+        $render = false;
 
         if ($pageAction == 'Next') {
             $data = array_merge($this->wizard->getData(), filter_input_array(INPUT_POST));
             unset($data['page_action']);
-            if($this->validateWidgets($page['widgets'])) {
+            $this->wizard->setData($data);
+            if ($this->validateWidgets($widgets)) {
                 if (isset($page['on_next'])) {
                     $page['on_next']($this->wizard);
                 }
@@ -80,17 +88,21 @@ class Web extends Runner
                     default:
                         $this->pageNumber++;
                 }
+                $render = true;
             }
-            $_SESSION['anyen_data'] = $this->wizard->getData();
+
         } else if ($pageAction == 'Back') {
             $this->pageNumber--;
+            $render = true;
         }
 
         if ($pageAction) {
             $_SESSION['current_page'] = $this->pageNumber;
-            header("Location: $uri");
+            $_SESSION['anyen_data'] = $this->wizard->getData();
+            $_SESSION['messages'] = $this->wizard->getMessages();
+            header("Location: $uri?$this->pageNumber");
         } else {
-            $this->runPage($page);
+            $this->runPage($page, $widgets);
         }
     }
 }

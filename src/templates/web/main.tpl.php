@@ -61,7 +61,8 @@
         span {
             color: red;
             font-size: smaller;
-            display: none;
+            display: block;
+            margin-top: 5px;
         }
 
         input.error {
@@ -129,11 +130,11 @@
     <form method="POST">
         <div id="widgets_wrapper">
             <h2><?= $title ?></h2>
-            <?php if ($message != ''): ?>
-                <div id="message_box" class='<?= $message_type ?> <?= $message_type ?>_icon'>
-                    <?= $message ?>
+            <?php foreach ($messages as $message): ?>
+                <div id="message_box" class='<?= $message['type'] ?> <?= $message['type'] ?>_icon'>
+                    <?= $message['message'] ?>
                 </div>
-            <?php endif; ?>
+            <?php endforeach; ?>
             <?php foreach ($widgets as $widget): ?>
                 <div class="widget_wrapper">
                     <?= $widget ?>

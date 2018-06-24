@@ -101,10 +101,10 @@ abstract class Runner
         return $return;
     }
 
-    protected function runPage($wizard)
+    protected function runPage($page, $widgets)
     {
         $this->wizard->setStatus(Wizard::CONTINUE);
-        $this->renderPage($wizard);
+        $this->renderPage($page, $widgets);
     }
 
     protected function loadWidget($widget, $scope)
@@ -123,9 +123,7 @@ abstract class Runner
         return $success;
     }
 
-    abstract public function showMessage($message);
-
-    abstract protected function renderPage($wizard);
+    abstract protected function renderPage($wizard, $widgets);
 
     abstract protected function go($params);
 }
