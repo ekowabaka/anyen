@@ -11,7 +11,7 @@ class TextInputWidget extends Widget
         $dataValue = $this->wizard->getValue($this->getProperty('name'));
         $value = $dataValue == '' ? $this->getProperty('default') : $dataValue;
         $type = $this->getProperty('masked') == 'true' ? 'password' : 'text';
-        $message = $_SESSION["{$this->getProperty('name')}_message"];
+        $message = $_SESSION["{$this->getProperty('name')}_message"] ?? "";
         unset($_SESSION["{$this->getProperty('name')}_message"]);
 
         if (count($this->getProperty('options') ?? []) > 0) {
