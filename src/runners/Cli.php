@@ -56,7 +56,7 @@ class Cli extends Runner
             $response = $widget->render();
             if (is_array($response)) {
                 foreach ($response as $key => $value) {
-                    $this->data[$key] = $value;
+                    $this->wizard->setValue($key, $value);
                 }
             }
         }
@@ -96,7 +96,7 @@ class Cli extends Runner
 
             $messages = $this->wizard->getMessages();
             foreach($messages as $message) {
-                echo "{$message['message']}\n";
+                echo "\n{$message['message']}\n";
             }
 
             if ($this->lastWidgetType != 'text_input') {
