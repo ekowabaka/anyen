@@ -107,11 +107,15 @@ abstract class Runner
         $this->renderPage($page, $widgets);
     }
 
-    protected function loadWidget($widget, $scope)
+    protected function loadWidgets($pageWidgets, $scope)
     {
-        $widgetClass = "\\anyen\\widgets\\{$scope}\\" . self::getClassName($widget['type']) . 'Widget';
-        $widgetObject = new $widgetClass($widget, $this->wizard);
-        return $widgetObject;
+        $widgets = [];
+        foreach (isset($pageWidgets) ? $pageWidgets : [] as $widget) {
+            $widgetClass = "\\anyen\\widgets\\{$scope}\\" . self::getClassName($widget['type']) . 'Widget';
+            $widgetObject = new $widgetClass($widget, $this->wizard);
+            $widgets[] = $widgetObject;
+        }
+        return $widgets;
     }
 
     protected function validateWidgets($widgets)
@@ -123,7 +127,7 @@ abstract class Runner
         return $success;
     }
 
-    abstract protected function renderPage($wizard, $widgets);
+    abstract protected function renderPage($page, $widgetInstances);
 
     abstract protected function go($params);
 }

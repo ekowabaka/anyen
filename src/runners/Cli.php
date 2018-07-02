@@ -25,10 +25,14 @@
 
 namespace anyen\runners;
 
+use anyen\Runner;
+use anyen\Wizard;
+
+
 /**
  * A class for running wizards on the command line.
  */
-class Cli extends \anyen\Runner
+class Cli extends Runner
 {
     /**
      * Used to keep track of the last page rendered so in cases where the page
@@ -36,96 +40,70 @@ class Cli extends \anyen\Runner
      * @var string
      */
     private $lastPageTitle = null;
-    
+
     private $lastWidgetType = null;
-    
-    protected function renderPage($page) 
+
+    protected function renderPage($page, $widgets)
     {
         // Prevent the annoying repeated rendering of the title makes console clumsy
-        if($page['title'] != $this->lastPageTitle)
-        {
+        if ($page['title'] != $this->lastPageTitle) {
             echo "\n{$page['title']}\n";
             echo str_repeat("=", strlen($page['title'])) . "\n";
         }
         $this->lastPageTitle = $page['title'];
-        
-        if(is_array($page['widgets']))
-        {
-            foreach($page['widgets'] as $widget)
-            {
-                $this->renderWidget($widget);
+
+        foreach ($widgets as $widget) {
+            $response = $widget->render();
+            if (is_array($response)) {
+                foreach ($response as $key => $value) {
+                    $this->data[$key] = $value;
+                }
             }
         }
     }
-    
+
     public function showMessage($message)
     {
         echo "$message\n";
     }
-    
+
     public function out($string)
     {
         echo "$string\n";
     }
-    
-    /**
-     * Renders the CLI version of the current widget needed by the wizard.
-     * 
-     * @param type $widget 
-     */
-    private function renderWidget($widget)
-    {   
-        $this->lastWidgetType = $widget['type'];
-        $response = $this->loadWidget($widget, 'cli')->render();
-        if(is_array($response))
-        {
-            foreach($response as $key => $value)
-            {
-                $this->data[$key] = $value;
-            }
-        }
-    }
-    
+
     protected function go($params)
     {
         $wizard = $this->wizardDescription;
-        
-        for($i = $this->startPage; $i < count($wizard); $i++)
-        {
+
+        for ($i = 0; $i < count($wizard);) {
             $page = $wizard[$i];
-            $this->resetStatus();
-            $page['onrender']($this);
-            
-            switch($this->getStatus())
-            {
-                case self::STATUS_REPEAT:
-                    $i--;
-                    continue;
-                    
-                case self::STATUS_TERMINATE:
-                    $i = count($wizard);
-                    continue;
+            $this->runPage($page, $this->loadWidgets($page['widgets'], 'cli'));
+            if(isset($page['on_next'])) {
+                $page['on_next']($this->wizard);
             }
-            
-            $this->runPage($page);
-            $page['onroute']($this);
-            
-            switch($this->getStatus())
-            {
-                case self::STATUS_REPEAT:
-                    $i--;
+            switch ($this->wizard->getStatus()) {
+                case Wizard::REPEAT:
                     break;
-                
-                case self::STATUS_TERMINATE:
+
+                case Wizard::TERMINATE:
                     $i = count($wizard);
                     break;
+
+                default:
+                    $i++;
             }
-            
-            if($this->lastWidgetType != 'text_input') {
+
+            $messages = $this->wizard->getMessages();
+            foreach($messages as $message) {
+                echo "{$message['message']}\n";
+            }
+
+            if ($this->lastWidgetType != 'text_input') {
                 echo "\nPress ENTER to continue ...";
-                $char = fgetc(STDIN);                
+                $char = fgetc(STDIN);
             }
-        }        
+        }
     }
 }
 

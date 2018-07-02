@@ -26,12 +26,12 @@ class Web extends Runner
      * Renders the page
      * @param string $page
      */
-    protected function renderPage($page, $widgets)
+    protected function renderPage($page, $widgetInstances)
     {
         $title = isset($page['title']) ? $page['title'] : '';
         $widgets = array_map(function ($w) {
             return $w->render();
-        }, $widgets);
+        }, $widgetInstances);
         $banner = $this->banner;
         $page_number = $this->pageNumber;
 
@@ -46,15 +46,6 @@ class Web extends Runner
         require __DIR__ . "/../templates/web/main.tpl.php";
     }
 
-    private function loadWidgets($pageWidgets)
-    {
-        $widgets = [];
-        foreach (isset($pageWidgets) ? $pageWidgets : [] as $widget) {
-            $widgets[] = $this->loadWidget($widget, 'web');
-        }
-        return $widgets;
-    }
-
     protected function go($params)
     {
         $this->wizard->setData($_SESSION['anyen_data'] ?? []);
@@ -65,7 +56,7 @@ class Web extends Runner
         }
 
         $page = $this->wizardDescription[$this->pageNumber];
-        $widgets = $this->loadWidgets($page['widgets']);
+        $widgets = $this->loadWidgets($page['widgets'], 'web');
         $this->banner = $page['banner'] ?? $params['banner'];
         $pageAction = filter_input(INPUT_POST, 'page_action');
         $uri = explode('?', filter_input(INPUT_SERVER, 'REQUEST_URI'))[0];
